@@ -1,0 +1,146 @@
+/* Apple-inspired login page styling */
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap');
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #fafafa;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.logo-container {
+  margin-bottom: 24px;
+}
+
+.apple-logo {
+  width: 40px;
+  height: 40px;
+  background-color: #000;
+  margin: 0 auto;
+  border-radius: 10px;
+  position: relative;
+}
+
+.apple-logo:after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 15px;
+  height: 15px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: -20px 0 0 white;
+}
+
+h1 {
+  margin: 0;
+  color: #1d1d1f;
+  font-weight: 500;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  color: #86868b;
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.google-signin-btn, .guest-signin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.google-signin-btn {
+  background-color: white;
+  color: #1d1d1f;
+  border: 1px solid #e6e6e6;
+}
+
+.google-signin-btn:hover {
+  background-color: #f5f5f7;
+}
+
+.google-icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.guest-signin-btn {
+  background-color: #06c;
+  color: white;
+}
+
+.guest-signin-btn:hover {
+  background-color: #0055b3;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+  color: #86868b;
+}
+
+.divider:before, .divider:after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.divider span {
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+.terms-text {
+  margin-top: 32px;
+  font-size: 12px;
+  color: #86868b;
+  line-height: 1.4;
+}
+
+.terms-text a {
+  color: #06c;
+  text-decoration: none;
+}
+
+.terms-text a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 32px 24px;
+    border-radius: 16px;
+    box-shadow: none;
+  }
+}

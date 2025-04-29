@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './Pages/LoginPage';
+import PetList from './Pages/PetList';
+import PetDetails from './Pages/PetDetails';
+import './App.css';
+
+// Import styles for the AdoptionForm
+import './Styles/AdoptionForm.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Simple authentication state (in a real app, use context or Redux)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Mock login function
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="app-container">
+        <Routes>
+          {/* Public route - Login Page */}
+          <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+          
+          {/* Pet Listing Page - Protected */}
+          <Route 
+            path="/pets" 
+            element={isAuthenticated ? <PetList /> : <Navigate to="/login" />} 
+          />
+          
+          {/* Pet Details Page - Protected */}
+          <Route 
+            path="/pet/:id" 
+            element={isAuthenticated ? <PetDetails /> : <Navigate to="/login" />} 
+          />
+          
+          {/* Redirect to login by default */}
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
