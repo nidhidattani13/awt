@@ -1,0 +1,248 @@
+/* Adoption Form Styling - Porcelain white and green theme */
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
+
+.adoption-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.adoption-form-container {
+  background-color: #f9faf5; /* Porcelain white background */
+  border-radius: 16px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  position: relative;
+  padding: 32px;
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #888;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.form-header h2 {
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #2e7d32; /* Green color for header */
+  margin-bottom: 8px;
+}
+
+.form-header p {
+  color: #666;
+  font-size: 16px;
+}
+
+.adoption-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  background-color: #fff;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #4CAF50; /* Green focus border */
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.form-group input.error,
+.form-group textarea.error,
+.form-group select.error {
+  border-color: #e53935;
+  background-color: #fff8f8;
+}
+
+.error-message {
+  color: #e53935;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.radio-label input {
+  margin-right: 8px;
+  accent-color: #2e7d32; /* Green radio buttons */
+}
+
+.adoption-fee-notice {
+  background-color: #e8f5e9; /* Light green background */
+  padding: 16px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 16px 0;
+}
+
+.adoption-fee-notice p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2e7d32; /* Green text */
+  margin-bottom: 4px;
+}
+
+.adoption-fee-notice span {
+  font-size: 14px;
+  color: #666;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.cancel-btn,
+.submit-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.cancel-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.submit-btn {
+  background-color: #4CAF50; /* Green submit button */
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #43a047;
+}
+
+.submit-btn:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+/* Style specifically for the adoption type buttons */
+.adoption-type-group .radio-label {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.adoption-type-group .radio-label:hover {
+  background-color: #f9f9f9;
+}
+
+.adoption-type-group input[type="radio"]:checked + span {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.adoption-type-group .radio-group {
+  display: flex;
+  width: 100%;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+  .adoption-form-container {
+    padding: 24px 16px;
+    width: 95%;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .adoption-type-group .radio-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
