@@ -1,0 +1,44 @@
+/* AdminPage.css */
+/* Reset styles to remove any unwanted margins or paddings */
+.admin-page {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  top: 0;
+  position: relative;
+}
+
+/* Fix the sidebar to stay at the top of the page */
+.admin-page .bg-dark {
+  min-height: 100vh;
+  top: 0;
+  z-index: 1030;
+}
+
+/* Main content area */
+.admin-page .flex-grow-1 {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* Make sure the header stays at the top */
+.admin-page .bg-white {
+  top: 0;
+}
+
+/* Container for the admin route to reset any margins */
+.admin-route-container {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Override any Bootstrap spacing that might cause gaps */
+body.admin-body {
+  padding-top: 0 !important;
+}
+
+/* Make sure there's no extra space above the admin page */
+.content-wrapper {
+  padding-top: 0;
+}

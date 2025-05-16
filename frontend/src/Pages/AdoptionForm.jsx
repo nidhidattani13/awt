@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import '../Styles/AdoptionForm.css';
+import { Modal, Form, Button, Alert } from 'react-bootstrap';
+import { Toast, ToastContainer } from 'react-bootstrap';
+
 
 const AdoptionForm = ({ pet, adoptionType, onClose, onSubmit }) => {
   // Form state
@@ -16,6 +18,9 @@ const AdoptionForm = ({ pet, adoptionType, onClose, onSubmit }) => {
   // Validation state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validated, setValidated] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+
 
   // Set adoption type when prop changes
   useEffect(() => {
@@ -72,160 +77,231 @@ const AdoptionForm = ({ pet, adoptionType, onClose, onSubmit }) => {
   };
 
   // Form submission handler
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validateForm();
-    
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-    
-    setIsSubmitting(true);
-    
-    // Simulate form submission - in a real app, you would call an API
-    setTimeout(() => {
-      setIsSubmitting(false);
-      onSubmit(formData);
-    }, 1000);
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const validationErrors = validateForm();
+  setValidated(true);
 
-  return (
-    <div className="adoption-form-overlay">
-      <div className="adoption-form-container">
-        <button className="close-button" onClick={onClose}>×</button>
-        
-        <div className="form-header">
-          <h2>Adoption Application</h2>
-          <p>for {pet.name} - {formData.adoptionType === 'temporary' ? 'Temporary' : 'Permanent'} Adoption</p>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="adoption-form">
-          <div className="form-group">
-            <label htmlFor="name">Full Name</label>
-            <input
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    const response = await fetch('http://localhost:5000/api/adoptions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        petId: pet._id,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        adoptionType: formData.adoptionType,
+        duration: formData.duration,
+        comments: formData.comments
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to submit application');
+    }
+
+    // Success: show popup toast
+    setShowSuccessToast(true);
+    setTimeout(() => setShowSuccessToast(false), 4000);
+
+    onSubmit(formData); // Call parent callback if needed
+    setIsSubmitting(false);
+    onClose(); // Close modal or form if needed
+
+  } catch (error) {
+    setIsSubmitting(false);
+    alert(`Error: ${error.message}`);
+  }
+};
+
+
+ return (
+  <>
+    <Modal show={true} onHide={onClose} centered size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>
+          Adoption Application
+          <p className="text-muted mb-0 fs-6">
+            for {pet.name} - {formData.adoptionType === 'temporary' ? 'Temporary' : 'Permanent'} Adoption
+          </p>
+        </Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label>Full Name</Form.Label>
+            <Form.Control
               type="text"
-              id="name"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={errors.name ? 'error' : ''}
+              isInvalid={errors.name}
+              required
             />
-            {errors.name && <span className="error-message">{errors.name}</span>}
-          </div>
+            <Form.Control.Feedback type="invalid">
+              {errors.name || 'Please provide your full name.'}
+            </Form.Control.Feedback>
+          </Form.Group>
           
-          <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <input
+          <Form.Group className="mb-3">
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
               type="email"
-              id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={errors.email ? 'error' : ''}
+              isInvalid={errors.email}
+              required
             />
-            {errors.email && <span className="error-message">{errors.email}</span>}
-          </div>
+            <Form.Control.Feedback type="invalid">
+              {errors.email || 'Please provide a valid email.'}
+            </Form.Control.Feedback>
+          </Form.Group>
           
-          <div className="form-group">
-            <label htmlFor="phone">Phone Number</label>
-            <input
+          <Form.Group className="mb-3">
+            <Form.Label>Phone Number</Form.Label>
+            <Form.Control
               type="tel"
-              id="phone"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className={errors.phone ? 'error' : ''}
+              isInvalid={errors.phone}
               placeholder="e.g., 1234567890"
+              required
             />
-            {errors.phone && <span className="error-message">{errors.phone}</span>}
-          </div>
+            <Form.Control.Feedback type="invalid">
+              {errors.phone || 'Please provide a valid phone number.'}
+            </Form.Control.Feedback>
+          </Form.Group>
           
-          <div className="form-group">
-            <label htmlFor="address">Home Address</label>
-            <textarea
-              id="address"
+          <Form.Group className="mb-3">
+            <Form.Label>Home Address</Form.Label>
+            <Form.Control
+              as="textarea"
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className={errors.address ? 'error' : ''}
+              isInvalid={errors.address}
               rows="2"
+              required
             />
-            {errors.address && <span className="error-message">{errors.address}</span>}
-          </div>
+            <Form.Control.Feedback type="invalid">
+              {errors.address || 'Please provide your address.'}
+            </Form.Control.Feedback>
+          </Form.Group>
           
-          <div className="form-group adoption-type-group">
-            <label>Adoption Type</label>
-            <div className="radio-group">
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  name="adoptionType"
-                  value="temporary"
-                  checked={formData.adoptionType === 'temporary'}
-                  onChange={handleChange}
-                />
-                <span>Temporary</span>
-              </label>
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  name="adoptionType"
-                  value="permanent"
-                  checked={formData.adoptionType === 'permanent'}
-                  onChange={handleChange}
-                />
-                <span>Permanent</span>
-              </label>
+          <Form.Group className="mb-3">
+            <Form.Label>Adoption Type</Form.Label>
+            <div>
+              <Form.Check
+                inline
+                type="radio"
+                id="temporary"
+                label="Temporary"
+                name="adoptionType"
+                value="temporary"
+                checked={formData.adoptionType === 'temporary'}
+                onChange={handleChange}
+              />
+              <Form.Check
+                inline
+                type="radio"
+                id="permanent"
+                label="Permanent"
+                name="adoptionType"
+                value="permanent"
+                checked={formData.adoptionType === 'permanent'}
+                onChange={handleChange}
+              />
             </div>
-          </div>
+          </Form.Group>
           
           {formData.adoptionType === 'temporary' && (
-            <div className="form-group">
-              <label htmlFor="duration">Duration</label>
-              <select
-                id="duration"
+            <Form.Group className="mb-3">
+              <Form.Label>Duration</Form.Label>
+              <Form.Select
                 name="duration"
                 value={formData.duration}
                 onChange={handleChange}
-                className={errors.duration ? 'error' : ''}
+                isInvalid={errors.duration}
+                required
               >
                 <option value="1 week">1 week</option>
                 <option value="2 weeks">2 weeks</option>
                 <option value="1 month">1 month</option>
                 <option value="3 months">3 months</option>
-              </select>
-              {errors.duration && <span className="error-message">{errors.duration}</span>}
-            </div>
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                {errors.duration || 'Please select a duration.'}
+              </Form.Control.Feedback>
+            </Form.Group>
           )}
           
-          <div className="form-group">
-            <label htmlFor="comments">Additional Comments</label>
-            <textarea
-              id="comments"
+          <Form.Group className="mb-3">
+            <Form.Label>Additional Comments</Form.Label>
+            <Form.Control
+              as="textarea"
               name="comments"
               value={formData.comments}
               onChange={handleChange}
               rows="3"
               placeholder="Tell us why you'd like to adopt this pet and any relevant experience with pets..."
             />
-          </div>
+          </Form.Group>
           
-          <div className="adoption-fee-notice">
-            <p>Adoption Fee: {pet.adoptionFee}</p>
-            <span>Fee will be collected upon approval of your application</span>
-          </div>
-          
-          <div className="form-actions">
-            <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
-            <button type="submit" className="submit-btn" disabled={isSubmitting}>
-              {isSubmitting ? 'Submitting...' : 'Submit Application'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
+          <Alert variant="info">
+            <strong>Adoption Fee: {pet.adoptionFee}</strong>
+            <p className="mb-0 small">Fee will be collected upon approval of your application</p>
+          </Alert>
+        </Form>
+      </Modal.Body>
+      
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Submitting...' : 'Submit Application'}
+        </Button>
+      </Modal.Footer>
+    </Modal>
 
+    {/* Toast Popup */}
+    <ToastContainer position="top-end" className="p-3" style={{ zIndex: 1055 }}>
+      <Toast 
+        bg="success" 
+        onClose={() => setShowSuccessToast(false)} 
+        show={showSuccessToast} 
+        delay={4000} 
+        autohide
+      >
+        <Toast.Header>
+          <strong className="me-auto">Success</strong>
+        </Toast.Header>
+        <Toast.Body className="text-white">
+          Application submitted successfully!
+        </Toast.Body>
+      </Toast>
+    </ToastContainer>
+  </>
+);
+};
 export default AdoptionForm;

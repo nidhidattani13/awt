@@ -1,74 +1,146 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { AuthProvider } from './contexts/AuthContext';
+
 import Navbar from './components/Navbar';
 import HomePage from './Pages/Home';
 import LoginPage from './Pages/LoginPage';
+import SignUp from './Pages/SignUp';
 import PetList from './Pages/PetList';
 import PetDetails from './Pages/PetDetails';
 import AboutUs from './Pages/AboutUs';
 import Contact from './Pages/Contact';
-import './App.css';
+import Profile from './Pages/Profile';
+import Footer from './components/Footer';
+import AddPet from './Pages/AddPet';
+import AdminPage from './Pages/AdminPage';
+import MyApplications from './Pages/MyApplications';
+import MyListings from './Pages/MyListings';
 
-// Import styles
-import './Styles/AdoptionForm.css';
-import './Styles/Home.css';
-import './Styles/Navbar.css';
-import './Styles/LoginPage.css';
-import './Styles/PetList.css';
-import './Styles/PetDetails.css';
-import './Styles/AboutUs.css';
-import './Styles/Contact.css';
+import './App.css';
+import './Styles/Custom.css';
 
 function App() {
-  // Simple authentication state (in a real app, use context or Redux)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  // Mock login function
-  const handleLogin = () => {
+  useEffect(() => {
+    const checkAuth = () => {
+      const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
+      const isGoogleUser = localStorage.getItem('isGoogleUser') === 'true';
+      const adminStatus = localStorage.getItem('isAdmin') === 'true';
+
+      setIsAuthenticated(loggedInStatus || isGoogleUser);
+      setIsAdmin(adminStatus);
+    };
+
+    checkAuth();
+
+    window.addEventListener('storage', checkAuth);
+    return () => window.removeEventListener('storage', checkAuth);
+  }, []);
+
+  const handleLogin = (userData, token) => {
+    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('token', token);
+    localStorage.setItem('isLoggedIn', 'true');
+
+    if (userData.role === 'admin' || userData.isAdmin === true) {
+  localStorage.setItem('isAdmin', 'true');
+  setIsAdmin(true);
+} else {
+  localStorage.setItem('isAdmin', 'false');
+  setIsAdmin(false);
+}
+
+
     setIsAuthenticated(true);
   };
 
-  // Mock logout function
+  const handleAdminLogin = (userData) => {
+    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('token', 'admin-jwt-token'); // replace with real token if needed
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('isAdmin', 'true');
+    setIsAuthenticated(true);
+    setIsAdmin(true);
+  };
+
   const handleLogout = () => {
+    console.log("App handleLogout called");
+    localStorage.removeItem('userData');
+    localStorage.removeItem('token');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('isGoogleUser');
+    localStorage.removeItem('isAdmin');
     setIsAuthenticated(false);
+    setIsAdmin(false);
   };
 
   return (
-    <Router>
-      <div className="app-container">
-        <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
-        <div className="content-wrapper">
+    <AuthProvider>
+      <Router>
+      <div className="app-container d-flex flex-column min-vh-100">
+        <Navbar isAuthenticated={isAuthenticated} isAdmin={isAdmin} onLogout={handleLogout} />
+        <div className="content-wrapper flex-grow-1">
           <Routes>
-            {/* Home Page - Public */}
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutUs />} />
-            
-            {/* Contact Page - Public */}
             <Route path="/contact" element={<Contact />} />
-            
-            {/* Public route - Login Page */}
-            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-            
-            {/* Pet Listing Page - Protected */}
-            <Route 
-              path="/pets" 
-              element={isAuthenticated ? <PetList /> : <Navigate to="/login" />} 
+            <Route
+  path="/login"
+  element={
+    isAuthenticated
+      ? isAdmin
+        ? <Navigate to="/admin" />
+        : <Navigate to="/" />
+      : <LoginPage onLogin={handleLogin} />
+  }
+/>
+
+
+            <Route
+              path="/signup"
+              element={
+                isAuthenticated ? <Navigate to="/" /> : <SignUp onLogin={handleLogin} />
+              }
             />
-            
-            {/* Pet Details Page - Protected */}
-            <Route 
-              path="/pet/:id" 
-              element={isAuthenticated ? <PetDetails /> : <Navigate to="/login" />} 
+            <Route path="/pets" element={<PetList />} />
+            <Route path="/pet/:id" element={<PetDetails />} />
+            <Route
+              path="/add-pet"
+              element={isAuthenticated ? <AddPet /> : <Navigate to="/login" />}
             />
-              {/* About Us Page - Public */}
-            
-            
-            {/* Redirect to home by default */}
+            <Route
+              path="/profile"
+              element={isAuthenticated ? <Profile onLogout={handleLogout} /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/my-applications"
+              element={isAuthenticated ? <MyApplications /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/my-listings"
+              element={isAuthenticated ? <MyListings /> : <Navigate to="/login" />}
+            />
+            <Route 
+  path="/admin" 
+  element={
+    isAdmin 
+      ? <AdminPage /> 
+      : <Navigate to="/" />
+  } 
+/>
+
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </Router>
+    </AuthProvider>
   );
 }
 
