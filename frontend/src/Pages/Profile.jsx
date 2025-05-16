@@ -198,13 +198,7 @@ const Profile = ({ onLogout }) => {
             <Card.Body className="p-4">
               <h4 className="h5 fw-bold mb-3">Quick Links</h4>
               <div className="d-grid gap-2">
-                <Button 
-                  variant="outline-secondary" 
-                  className="text-start" 
-                  onClick={() => navigate('/my-listings')}
-                >
-                  <i className="bi bi-folder-plus me-2"></i> My Listings
-                </Button>
+
                 <Button 
                   variant="outline-secondary" 
                   className="text-start" 
@@ -454,14 +448,6 @@ const Profile = ({ onLogout }) => {
             <Card.Body className="p-4">
               <h3 className="h4 fw-bold mb-4">Account Settings</h3>
               <div className="d-grid gap-3">
-                <Button variant="outline-primary" onClick={() => navigate('/change-password')}>
-                  Change Password
-                </Button>
-                {user && !user.isGoogleUser && (
-                  <Button variant="outline-danger" onClick={() => navigate('/delete-account')}>
-                    Delete Account
-                  </Button>
-                )}
                 {/* Add Logout Button in Account Settings too */}
                 <Button 
                   variant="danger" 

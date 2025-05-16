@@ -17,7 +17,6 @@ import Footer from './components/Footer';
 import AddPet from './Pages/AddPet';
 import AdminPage from './Pages/AdminPage';
 import MyApplications from './Pages/MyApplications';
-import MyListings from './Pages/MyListings';
 
 import './App.css';
 import './Styles/Custom.css';
@@ -120,10 +119,6 @@ function App() {
             <Route
               path="/my-applications"
               element={isAuthenticated ? <MyApplications /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/my-listings"
-              element={isAuthenticated ? <MyListings /> : <Navigate to="/login" />}
             />
             <Route 
   path="/admin" 

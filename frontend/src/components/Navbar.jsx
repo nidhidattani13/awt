@@ -111,7 +111,7 @@ const Navbar = ({ isAuthenticated, isAdmin, onLogout }) => {
                   </button>
                   <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="user-dropdown">
                     <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
-                    <li><Link className="dropdown-item" to="/my-listings">My Listings</Link></li>
+
                     <li><Link className="dropdown-item" to="/my-applications">My Applications</Link></li>
                     {isAdmin && (
                       <li><Link className="dropdown-item" to="/admin">Admin Dashboard</Link></li>
